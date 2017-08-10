@@ -12,3 +12,7 @@ import (
 func InitServer(){
 	golog.Info("fbftp server initing......")
 }
+
+type fbFTPSever struct {
+	
+}
