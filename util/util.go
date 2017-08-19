@@ -11,4 +11,6 @@ import (
 
 func InitUtil(){
 	golog.Info("fbftp util initing......")
+
+	initTick()
 }

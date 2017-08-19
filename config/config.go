@@ -39,7 +39,6 @@ func GetConfig()*fbFTPConfig{
 	return g_conf
 }
 
-
 var g_conf *fbFTPConfig = new(fbFTPConfig)
 
 type fbFTPConfig struct {

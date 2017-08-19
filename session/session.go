@@ -6,10 +6,37 @@ date: 2017/8/10
 package session
 
 import (
-	"github.com/foolbread/fbcommon/golog"
+	"net"
 )
 
-func InitSession(){
-	golog.Info("fbftp session initing......")
+type FBFTPSession struct {
+	cmdCon *net.TCPConn
+	dataCon *net.TCPConn
 }
 
+func NewFBFTPSession()*FBFTPSession {
+	r := new(FBFTPSession)
+
+	return r
+}
+
+func (s *FBFTPSession)SetCmdConnect(con *net.TCPConn){
+	s.cmdCon = con
+}
+
+func (s *FBFTPSession)SetDataConnect(con *net.TCPConn){
+	s.dataCon = con
+}
+
+func (s *FBFTPSession)GetClientAddr()string{
+	var str string
+	if s.cmdCon != nil{
+		str = s.cmdCon.RemoteAddr().String()
+	}
+
+	return str
+}
+
+func (s *FBFTPSession)Notify(){
+
+}

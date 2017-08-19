@@ -1,68 +1,70 @@
 /*
 author: foolbread
 file: server/server.go
-date: 2017/8/4
+date: 2017/8/18
 */
 package server
 
 import (
 	"github.com/foolbread/fbcommon/golog"
-	"github.com/foolbread/fbftp/config"
 
-	"net"
-	"fmt"
+	"github.com/foolbread/fbftp/session"
+	"github.com/foolbread/fbftp/config"
 )
 
 func InitServer(){
 	golog.Info("fbftp server initing......")
 }
 
-type fbFTPSever struct {
-	server_port int
-	pasv_min_port int
-	pasv_max_port int
+const (
+	svr_msg_create = 1
+	svr_msg_pasv = 2
+	svr_msg_timeout = 3
+)
+
+type serverMsg struct {
+	msgType int
+	session *session.FBFTPSession
+	externData interface{}
 }
 
-func newFBFTPServer()*fbFTPSever{
-	r := new(fbFTPSever)
-	r.server_port = config.GetConfig().GetPort()
-	r.pasv_min_port = config.GetConfig().GetPasvMinPort()
-	r.pasv_max_port = config.GetConfig().GetPasvMaxPort()
+var g_server *fbFTPServer = newfbFTPServer()
+
+type fbFTPServer struct {
+	cmdServer *fbFTPCmdSever
+	pasvServers []*fbFTPPasvServer
+	msgCH chan *serverMsg
+}
+
+func newfbFTPServer()*fbFTPServer{
+	r := new(fbFTPServer)
+	r.msgCH = make(chan *serverMsg,100)
+	r.cmdServer = newfbFTPCmdServer(config.GetConfig().GetPort())
+	for i := config.GetConfig().GetPasvMinPort(); i <= config.GetConfig().GetPasvMaxPort(); i++{
+		r.pasvServers = append(r.pasvServers, newfbFTPPasvServer(i))
+	}
 
 	return r
 }
 
-func (s *fbFTPSever)run(){
+func (s *fbFTPServer)run(){
+	go s.cmdServer.run()
 
-}
-
-func (s *fbFTPSever)startServerListen(){
-	serverAddr,err := net.ResolveTCPAddr("tcp",fmt.Sprintf(":%d",s.server_port))
-	if err != nil{
-		golog.Critical(err)
+	for _,v := range s.pasvServers{
+		go v.run()
 	}
+	
+	for {
+		msg := <- s.msgCH
 
-	li,err := net.ListenTCP("tcp",serverAddr)
-	if err != nil{
-		golog.Critical(err)
-	}
-
-	for{
-		li.Accept()
-	}
-}
-
-func (s *fbFTPSever)startPasvListen(){
-	for i:=s.pasv_min_port; i<=s.pasv_max_port; i++{
-		pasvAddr,err := net.ResolveTCPAddr("tcp",fmt.Sprintf(":%d",i))
-		if err != nil{
-			golog.Critical(err)
+		switch msg.msgType {
+		case svr_msg_create:
+		case svr_msg_pasv:
+		case svr_msg_timeout:
 		}
-
-		li,err := net.ListenTCP("tcp",pasvAddr)
-
-		go func(){
-			li.Accept()
-		}()
 	}
+}
+
+func sendOwerServer(m *serverMsg){
+	g_server.msgCH <- m
 }
