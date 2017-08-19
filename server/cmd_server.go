@@ -46,9 +46,8 @@ func (s *fbFTPCmdSever)startServerListen(){
 		}
 
 		sess := session.NewFBFTPSession()
-		sess.SetCmdConnect(con)
 
-		msg := &serverMsg{svr_msg_create,sess,nil}
+		msg := &serverMsg{svr_msg_create,sess,con}
 		sendOwerServer(msg)
 	}
 }

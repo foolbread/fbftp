@@ -20,11 +20,11 @@ func NewFBFTPSession()*FBFTPSession {
 	return r
 }
 
-func (s *FBFTPSession)SetCmdConnect(con *net.TCPConn){
+func (s *FBFTPSession)setCmdConnect(con *net.TCPConn){
 	s.cmdCon = con
 }
 
-func (s *FBFTPSession)SetDataConnect(con *net.TCPConn){
+func (s *FBFTPSession)setDataConnect(con *net.TCPConn){
 	s.dataCon = con
 }
 

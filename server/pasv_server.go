@@ -64,11 +64,10 @@ func (s *fbFTPPasvServer)startServerListen(){
 		addr := strings.Split(con.RemoteAddr().String(),":")
 		if s.isWait(addr[0]){
 			sess := s.getFromWait(addr[0])
-			sess.SetDataConnect(con)
 
 			s.deleteFromWait(addr[0])
 
-			msg := &serverMsg{svr_msg_pasv,sess,nil}
+			msg := &serverMsg{svr_msg_pasv,sess,con}
 			sendOwerServer(msg)
 		}else{
 			con.Close()

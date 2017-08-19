@@ -55,16 +55,35 @@ func (s *fbFTPServer)run(){
 	}
 	
 	for {
-		msg := <- s.msgCH
-
-		switch msg.msgType {
-		case svr_msg_create:
-		case svr_msg_pasv:
-		case svr_msg_timeout:
+		select {
+		case msg := s.recvServerMsg():
+				go s.handlerServerMsg(msg)
+		case sess := session.RecvPasvReq():
+				go s.handlerPasvReq(sess)
 		}
 	}
 }
 
+func (s *fbFTPServer)recvServerMsg()*serverMsg{
+	return <-s.msgCH
+}
+
+func (s *fbFTPServer)handlerServerMsg(m *serverMsg){
+	switch m.msgType {
+	case svr_msg_create:
+		session.CommitSessionMsg(session.NewSessionCreateMsg(m.session,m.externData))
+	case svr_msg_pasv:
+		session.CommitSessionMsg(session.NewSessionPasvMsg(m.session,m.externData))
+	case svr_msg_timeout:
+		session.CommitSessionMsg(session.NewSessionTimeoutMsg(m.session,m.externData))
+	}
+}
+
+func (s *fbFTPServer)handlerPasvReq(sess *session.FBFTPSession){
+
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
 func sendOwerServer(m *serverMsg){
 	g_server.msgCH <- m
 }
