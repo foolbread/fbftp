@@ -8,82 +8,69 @@ package server
 import (
 	"github.com/foolbread/fbcommon/golog"
 
-	"github.com/foolbread/fbftp/session"
 	"github.com/foolbread/fbftp/config"
+	"github.com/foolbread/fbftp/session"
+	"github.com/foolbread/fbftp/con"
+	"net"
+	"fmt"
+	"github.com/foolbread/fbftp/protocol"
 )
 
 func InitServer(){
 	golog.Info("fbftp server initing......")
-}
 
-const (
-	svr_msg_create = 1
-	svr_msg_pasv = 2
-	svr_msg_timeout = 3
-)
-
-type serverMsg struct {
-	msgType int
-	session *session.FBFTPSession
-	externData interface{}
+	go g_server.serve()
 }
 
 var g_server *fbFTPServer = newfbFTPServer()
 
 type fbFTPServer struct {
-	cmdServer *fbFTPCmdSever
-	pasvServers []*fbFTPPasvServer
-	msgCH chan *serverMsg
+
 }
 
 func newfbFTPServer()*fbFTPServer{
 	r := new(fbFTPServer)
-	r.msgCH = make(chan *serverMsg,100)
-	r.cmdServer = newfbFTPCmdServer(config.GetConfig().GetPort())
-	for i := config.GetConfig().GetPasvMinPort(); i <= config.GetConfig().GetPasvMaxPort(); i++{
-		r.pasvServers = append(r.pasvServers, newfbFTPPasvServer(i))
-	}
 
 	return r
 }
 
-func (s *fbFTPServer)run(){
-	go s.cmdServer.run()
-
-	for _,v := range s.pasvServers{
-		go v.run()
+func (s *fbFTPServer)serve(){
+	addr,err := net.ResolveTCPAddr("tcp",fmt.Sprintf(":%d",config.GetConfig().GetPort()))
+	if err != nil{
+		golog.Critical(err)
 	}
-	
-	for {
-		select {
-		case msg := s.recvServerMsg():
-				go s.handlerServerMsg(msg)
-		case sess := session.RecvPasvReq():
-				go s.handlerPasvReq(sess)
+
+	li,err := net.ListenTCP("tcp",addr)
+	if err != nil{
+		golog.Critical(err)
+	}
+
+	for{
+		c,err := li.AcceptTCP()
+		if err != nil{
+			golog.Error(err)
+			c.Close()
+			continue
 		}
+
+		go s.work(c)
 	}
 }
 
-func (s *fbFTPServer)recvServerMsg()*serverMsg{
-	return <-s.msgCH
-}
+func (s *fbFTPServer)work(c *net.TCPConn){
+	sess := session.NewFTPSession()
+	sess.SetCMDCon(con.NewCmdCon(c))
 
-func (s *fbFTPServer)handlerServerMsg(m *serverMsg){
-	switch m.msgType {
-	case svr_msg_create:
-		session.CommitSessionMsg(session.NewSessionCreateMsg(m.session,m.externData))
-	case svr_msg_pasv:
-		session.CommitSessionMsg(session.NewSessionPasvMsg(m.session,m.externData))
-	case svr_msg_timeout:
-		session.CommitSessionMsg(session.NewSessionTimeoutMsg(m.session,m.externData))
+	for{
+		req,err := sess.RecvCMD()
+		if err != nil{
+			golog.Error(err)
+			sess.Close()
+			break
+		}
+
+		protocol.DisPatchCmd(sess,req)
 	}
 }
 
-func (s *fbFTPServer)handlerPasvReq(sess *session.FBFTPSession){
 
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-func sendOwerServer(m *serverMsg){
-	g_server.msgCH <- m
-}

@@ -18,21 +18,27 @@ func InitConfig(configfile string){
 	}
 
 	var section string
-	var val int
+	var val string
+	var vai int
 	section = "server"
-	val = conf.MustInt(section,"port",21)
-	g_conf.port = val
+	vai = conf.MustInt(section,"port",21)
+	g_conf.port = vai
 
-	val = conf.MustInt(section,"pasv_min_port",0)
-	g_conf.pasv_min_port = val
+	vai = conf.MustInt(section,"pasv_min_port",0)
+	g_conf.pasvMinPort = vai
 
-	val = conf.MustInt(section,"pasv_max_port",0)
-	g_conf.pasv_max_port = val
+	vai = conf.MustInt(section,"pasv_max_port",0)
+	g_conf.pasvMaxPort = vai
+
+	section = "ftp"
+	val = conf.MustString(section,"welcome_msg","")
+	g_conf.welcomeMsg = val
+
 
 	//print config result
 	golog.Info("server","port",g_conf.port)
-	golog.Info("server","pasv_min_port",g_conf.pasv_min_port)
-	golog.Info("server","pasv_max_port",g_conf.pasv_max_port)
+	golog.Info("server","pasvMinPort",g_conf.pasvMinPort)
+	golog.Info("server","pasvMaxPort",g_conf.pasvMaxPort)
 }
 
 func GetConfig()*fbFTPConfig{
@@ -42,9 +48,11 @@ func GetConfig()*fbFTPConfig{
 var g_conf *fbFTPConfig = new(fbFTPConfig)
 
 type fbFTPConfig struct {
-	port int
-	pasv_min_port int
-	pasv_max_port int
+	port        int
+	pasvMinPort int
+	pasvMaxPort int
+
+	welcomeMsg string
 }
 
 func (c *fbFTPConfig)GetPort()int{
@@ -52,10 +60,14 @@ func (c *fbFTPConfig)GetPort()int{
 }
 
 func (c *fbFTPConfig)GetPasvMinPort()int{
-	return c.pasv_min_port
+	return c.pasvMinPort
 }
 
 func (c *fbFTPConfig)GetPasvMaxPort()int{
-	return c.pasv_max_port
+	return c.pasvMaxPort
+}
+
+func (c *fbFTPConfig)GetWelcomeMsg()string{
+	return c.welcomeMsg
 }
 
