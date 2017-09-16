@@ -27,7 +27,7 @@ func init(){
 	flag.Parse()
 
 	config.InitConfig(config_file)
-	log.InitLog()
+	log.InitLog(config.GetConfig().GetLogFile())
 	statistics.InitStatistics()
 	protocol.InitProtocol()
 	session.InitSession()

@@ -18,14 +18,3 @@ const (
 	ONLY_WRITE = 2
 	READ_WRITE = ONLY_READ&ONLY_WRITE
 )
-
-type ftpACLManager struct {
-	userACLMap map[string]*AclUser
-}
-
-func newftpACLManager()*ftpACLManager{
-	r := new(ftpACLManager)
-	r.userACLMap = make(map[string]*AclUser)
-
-	return r
-}
