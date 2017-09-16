@@ -34,11 +34,16 @@ func InitConfig(configfile string){
 	val = conf.MustString(section,"welcome_msg","")
 	g_conf.welcomeMsg = val
 
+	section = "log"
+	val = conf.MustString(section,"log_file","")
+	g_conf.logfile = val
 
 	//print config result
-	golog.Info("server","port",g_conf.port)
-	golog.Info("server","pasvMinPort",g_conf.pasvMinPort)
-	golog.Info("server","pasvMaxPort",g_conf.pasvMaxPort)
+	golog.Info("[server]","port:",g_conf.port)
+	golog.Info("[server]","pasv_min_port:",g_conf.pasvMinPort)
+	golog.Info("[server]","pasv_max_port:",g_conf.pasvMaxPort)
+	golog.Info("[ftp]","welcome_msg:",g_conf.welcomeMsg)
+	golog.Info("[log]","log_file:",g_conf.logfile)
 }
 
 func GetConfig()*fbFTPConfig{
@@ -53,6 +58,7 @@ type fbFTPConfig struct {
 	pasvMaxPort int
 
 	welcomeMsg string
+	logfile string
 }
 
 func (c *fbFTPConfig)GetPort()int{
@@ -69,5 +75,9 @@ func (c *fbFTPConfig)GetPasvMaxPort()int{
 
 func (c *fbFTPConfig)GetWelcomeMsg()string{
 	return c.welcomeMsg
+}
+
+func (c *fbFTPConfig)GetLogFile()string{
+	return c.logfile
 }
 

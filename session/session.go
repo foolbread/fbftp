@@ -9,6 +9,7 @@ import (
 	"github.com/foolbread/fbcommon/golog"
 
 	"github.com/foolbread/fbftp/con"
+	"github.com/foolbread/fbftp/user"
 )
 
 func InitSession(){
@@ -16,9 +17,11 @@ func InitSession(){
 }
 
 type FTPSession struct {
-	user string
-	ctrlCon *con.CmdCon
-	dataCon *con.PasvCon
+	UserName string
+	UserInfo user.FBFTPUser
+	CurPath string
+	ctrlCon  *con.CmdCon
+	dataCon  *con.PasvCon
 }
 
 func NewFTPSession()*FTPSession{
@@ -54,5 +57,5 @@ func (s *FTPSession)WriteMsg(code int,msg string)error{
 }
 
 func (s *FTPSession)IsLogin()bool{
-	return len(s.user) != 0
+	return s.UserInfo != nil
 }

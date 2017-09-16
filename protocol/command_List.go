@@ -1,6 +1,6 @@
 /*
 author: foolbread
-file: protocol/command_List.go
+file: protocol/command_list.go
 date: 2017/9/12
 */
 package protocol

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf8" ?>
+<ftpuser>
+    <ftpuser_type val = "common">
+        <user>
+            <username>hello</username>
+            <password>123456</password>
+        </user>
+        <user>
+            <username>test</username>
+            <password>test</password>
+        </user>
+    </ftpuser_type>
+
+    <ftpuser_type val = "cloud">
+
+    </ftpuser_type>
+</ftpuser>

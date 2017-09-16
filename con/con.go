@@ -18,3 +18,7 @@ func InitCon(){
 
 	go g_pasvportManager.run()
 }
+
+func GetFreePassPort()int{
+	return g_pasvportManager.GetFreePasvPort()
+}

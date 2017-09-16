@@ -1,6 +1,6 @@
 /*
 author: foolbread
-file: protocol/command_User.go
+file: protocol/command_user.go
 date: 2017/9/12
 */
 package protocol
@@ -26,5 +26,7 @@ func (p *commandUser)RequireParam()bool{
 }
 
 func (p *commandUser)Execute(sess *session.FTPSession, arg string)error{
-	return nil
+	sess.UserName = arg
+
+	return sess.WriteMsg(FTP_GIVEPWORD,"Please specify the password.")
 }
