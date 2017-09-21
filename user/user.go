@@ -7,18 +7,20 @@ package user
 
 import (
 	"github.com/foolbread/fbcommon/golog"
+	"github.com/foolbread/fbftp/config"
 )
 
 func InitUser(){
 	golog.Info("fbftp user initing......")
 
-	g_userManager.initUserManager()
+	initUserManager()
 }
 
 type UserType int
 
 const (
 	COMMON_USER = 1
+	CLOUD_USER = 2
 )
 
 func UserLogin(usr string,pwd string)FBFTPUser{
@@ -30,17 +32,21 @@ func UserLogin(usr string,pwd string)FBFTPUser{
 
 	switch g_userManager.getUserType(usr) {
 	case COMMON_USER:
-		ret = NewCommonUser(usr,pwd)
+		ret = newCommonUser(usr,pwd)
+	case CLOUD_USER:
+		ret = newCloudUser(usr,pwd)
 	}
 
 	return ret
 }
 
-type FBFTPUser interface {
-
-}
-
 var g_userManager *fbFTPUserManager = newfbFTPUserManager()
+
+func initUserManager(){
+	g_userManager.updateCommonUser()
+
+	g_userManager.updateCloudUser()
+}
 
 type fbFTPUserManager struct {
 	userMap map[string]string
@@ -55,8 +61,20 @@ func newfbFTPUserManager()*fbFTPUserManager{
 	return r
 }
 
-func (u *fbFTPUserManager)initUserManager(){
+func (u *fbFTPUserManager)updateCommonUser(){
+	commonUsers := config.GetConfig().GetAllCommonUsers()
+	for _,v := range commonUsers.Users{
+		u.userMap[v.UserName] = v.PassWord
+		u.userTypeMap[v.UserName] = COMMON_USER
+	}
+}
 
+func (u *fbFTPUserManager)updateCloudUser(){
+	cloudUsers := config.GetConfig().GetAllCloudUsers()
+	for _,v := range cloudUsers.Users{
+		u.userMap[v.UserName] = v.PassWord
+		u.userTypeMap[v.UserName] = CLOUD_USER
+	}
 }
 
 func (u *fbFTPUserManager)getUserType(usr string)UserType{
@@ -72,3 +90,7 @@ func (u *fbFTPUserManager)checkUser(usr string,password string)bool{
 	return ps == password
 }
 
+type FBFTPUser interface {
+	GetUserType()int
+	GetUserName()string
+}

@@ -5,15 +5,23 @@ date: 2017/9/12
 */
 package user
 
-type CommonUser struct {
+type commonUser struct {
 	user string
 	pass string
 }
 
-func NewCommonUser(usr string,pass string)*CommonUser{
-	r := new(CommonUser)
+func newCommonUser(usr string,pass string)*commonUser{
+	r := new(commonUser)
 	r.user = usr
 	r.pass = pass
 
 	return r
+}
+
+func (u *commonUser)GetUserType()int{
+	return COMMON_USER
+}
+
+func (u *commonUser)GetUserName()string{
+	return u.user
 }
