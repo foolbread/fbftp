@@ -8,6 +8,8 @@ package config
 import (
 	"github.com/foolbread/fbcommon/golog"
 	fbconfig "github.com/foolbread/fbcommon/config"
+	"io/ioutil"
+	"encoding/xml"
 )
 
 func InitConfig(configfile string){
@@ -16,6 +18,8 @@ func InitConfig(configfile string){
 	if err != nil{
 		golog.Critical(err)
 	}
+
+	golog.Info("==============load config file==============")
 
 	var section string
 	var val string
@@ -38,12 +42,35 @@ func InitConfig(configfile string){
 	val = conf.MustString(section,"log_file","")
 	g_conf.logfile = val
 
+	section = "user"
+	val = conf.MustString(section,"user_conf_dir","")
+	g_conf.userConfDir = val
+
+	val = conf.MustString(section,"user_file","")
+	g_conf.userFile = val
+
 	//print config result
 	golog.Info("[server]","port:",g_conf.port)
 	golog.Info("[server]","pasv_min_port:",g_conf.pasvMinPort)
 	golog.Info("[server]","pasv_max_port:",g_conf.pasvMaxPort)
 	golog.Info("[ftp]","welcome_msg:",g_conf.welcomeMsg)
+	golog.Info("[user]","user_conf_dir:",g_conf.userConfDir)
+	golog.Info("[user]","user_file:",g_conf.userFile)
 	golog.Info("[log]","log_file:",g_conf.logfile)
+
+	golog.Info("==============load ftpuser file==============")
+
+	data,err := ioutil.ReadFile(g_conf.userFile)
+	if err != nil{
+		golog.Critical(err)
+	}
+
+	err = xml.Unmarshal(data,&g_conf.user)
+	if err != nil{
+		golog.Critical(err)
+	}
+
+	
 }
 
 func GetConfig()*fbFTPConfig{
@@ -59,6 +86,11 @@ type fbFTPConfig struct {
 
 	welcomeMsg string
 	logfile string
+
+	userConfDir string
+	userFile string
+
+	user fbUserConfig
 }
 
 func (c *fbFTPConfig)GetPort()int{
@@ -79,5 +111,35 @@ func (c *fbFTPConfig)GetWelcomeMsg()string{
 
 func (c *fbFTPConfig)GetLogFile()string{
 	return c.logfile
+}
+
+////////////////////////////////////////////////////////
+type fbUserConfig struct {
+	XMLName xml.Name `xml:"ftpuser"`
+	CommonUsers commonUsers `xml:"common_user"`
+	CloudUsers cloudUsers `xml:"cloud_user"`
+}
+
+type commonUsers struct {
+	Users []*fbCommonUserConfig `xml:"user"`
+}
+
+type cloudUsers struct {
+	Users []*fbCloudUserConfig	`xml:"user"`
+}
+
+type fbCommonUserConfig struct {
+	XMLName xml.Name `xml:"user"`
+	UserName string `xml:"username"`
+	PassWord string `xml:"password"`
+}
+
+type fbCloudUserConfig struct {
+	XMLName xml.Name `xml:"user"`
+	UserName string	`xml:"username"`
+	PassWord string `xml:"password"`
+	EndPoint string `xml:"endpoint"`
+	AccKey string	`xml:"acckey"`
+	SecKey string	`xml:"seckey"`
 }
 

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <ftpuser>
-    <ftpuser_type val = "common">
+    <common_user>
         <user>
             <username>hello</username>
             <password>123456</password>
@@ -9,9 +9,15 @@
             <username>test</username>
             <password>test</password>
         </user>
-    </ftpuser_type>
+    </common_user>
 
-    <ftpuser_type val = "cloud">
-
-    </ftpuser_type>
+    <cloud_user>
+        <user>
+            <username>kaka</username>
+            <password>234566</password>
+            <endpoint>www.baidu.com</endpoint>
+            <seckey>qtdxfwa3revhngpz7ujs</seckey>
+            <acckey>vHkJc0NuWcNLE9SFTjH4dMoOBZpM+QnLytah10MU</acckey>
+        </user>
+    </cloud_user>
 </ftpuser>
