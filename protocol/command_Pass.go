@@ -8,6 +8,7 @@ package protocol
 import (
 	"github.com/foolbread/fbftp/session"
 	"github.com/foolbread/fbftp/user"
+	"github.com/foolbread/fbftp/acl"
 )
 
 type commandPass struct {
@@ -27,9 +28,19 @@ func (p *commandPass)RequireParam()bool{
 }
 
 func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
-	usrobj := user.UserLogin(sess.UserName,arg)
-	if usrobj != nil{
-		sess.UserInfo = usrobj
+	var login bool = false
+	userobj := user.UserLogin(sess.UserName,arg)
+	if userobj != nil{
+		sess.UserInfo = userobj
+		useracl := acl.GetUserAcl(sess.UserName)
+		if useracl != nil{
+			sess.UserAcl = useracl
+			sess.CurPath = "/"
+			login = true
+		}
+	}
+
+	if login{
 		sess.WriteMsg(FTP_LOGINOK,"Login successful.")
 	}else{
 		sess.WriteMsg(FTP_BADPBSZ,"Login incorrect.")

@@ -70,7 +70,13 @@ func InitConfig(configfile string){
 		golog.Critical(err)
 	}
 
+	for _,v := range g_conf.user.CommonUsers.Users{
+		golog.Info("common user:",v.UserName)
+	}
 
+	for _,v := range g_conf.user.CloudUsers.Users{
+		golog.Info("cloud user:",v.UserName)
+	}
 }
 
 func GetConfig()*fbFTPConfig{
@@ -113,6 +119,10 @@ func (c *fbFTPConfig)GetLogFile()string{
 	return c.logfile
 }
 
+func (c *fbFTPConfig)GetUserConfDir()string{
+	return c.userConfDir
+}
+
 func (c *fbFTPConfig)GetAllCommonUsers()*commonUsers{
 	return &c.user.CommonUsers
 }
@@ -150,3 +160,4 @@ type fbCloudUserConfig struct {
 	AccKey string	`xml:"acckey"`
 	SecKey string	`xml:"seckey"`
 }
+////////////////////////////////////////////////////////

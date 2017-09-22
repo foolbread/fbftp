@@ -10,6 +10,7 @@ import (
 
 	"github.com/foolbread/fbftp/con"
 	"github.com/foolbread/fbftp/user"
+	"github.com/foolbread/fbftp/acl"
 )
 
 func InitSession(){
@@ -19,6 +20,7 @@ func InitSession(){
 type FTPSession struct {
 	UserName string
 	UserInfo user.FBFTPUser
+	UserAcl *acl.UserACL
 	CurPath string
 	ctrlCon  *con.CmdCon
 	dataCon  *con.PasvCon
