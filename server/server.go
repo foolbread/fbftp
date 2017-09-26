@@ -61,7 +61,7 @@ func (s *fbFTPServer)serve(){
 
 func (s *fbFTPServer)work(c *net.TCPConn){
 	sess := session.NewFTPSession()
-	sess.SetCMDCon(con.NewCmdCon(c))
+	sess.CtrlCon = con.NewCmdCon(c)
 
 	sess.WriteMsg(protocol.FTP_GREET,config.GetConfig().GetWelcomeMsg())
 
@@ -73,7 +73,7 @@ func (s *fbFTPServer)work(c *net.TCPConn){
 			break
 		}
 
-		golog.Info("recv cmd:",req.Cmd,"arg:",req.Arg,"arg len:",len(req.Arg))
+		golog.Info("recv cmd:",req.Cmd,"arg:",req.Arg)
 		err = protocol.DisPatchCmd(sess,req)
 		if err != nil{
 			golog.Error(err)

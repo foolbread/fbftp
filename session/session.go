@@ -18,12 +18,13 @@ func InitSession(){
 }
 
 type FTPSession struct {
-	UserName string
-	UserInfo user.FBFTPUser
-	UserAcl *acl.UserACL
-	CurPath string
-	ctrlCon  *con.CmdCon
-	dataCon  *con.PasvCon
+	UserName  string
+	UserInfo  user.FBFTPUser
+	UserAcl   *acl.UserACL
+	CurPath   string
+	LocalHost string
+	CtrlCon   *con.CmdCon
+	DataCon   *con.PasvCon
 }
 
 func NewFTPSession()*FTPSession{
@@ -32,30 +33,22 @@ func NewFTPSession()*FTPSession{
 	return r
 }
 
-func (s *FTPSession)SetCMDCon(con *con.CmdCon){
-	s.ctrlCon = con
-}
-
-func (s *FTPSession)SetDataCon(con *con.PasvCon){
-	s.dataCon = con
-}
-
 func (s *FTPSession)Close(){
-	if s.ctrlCon != nil{
-		s.ctrlCon.Close()
+	if s.CtrlCon != nil{
+		s.CtrlCon.Close()
 	}
 
-	if s.dataCon != nil{
-		s.dataCon.Close()
+	if s.DataCon != nil{
+		s.DataCon.Close()
 	}
 }
 
 func (s *FTPSession)RecvCMD()(*con.FTPCmdReq,error){
-	return s.ctrlCon.ReadCMDReq()
+	return s.CtrlCon.ReadCMDReq()
 }
 
 func (s *FTPSession)WriteMsg(code int,msg string)error{
-	return s.ctrlCon.WriteMsg(code,msg)
+	return s.CtrlCon.WriteMsg(code,msg)
 }
 
 func (s *FTPSession)IsLogin()bool{

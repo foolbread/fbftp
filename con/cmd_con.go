@@ -48,6 +48,14 @@ func (c *CmdCon)Close(){
 	}
 }
 
+func (c *CmdCon)GetLocalHost()string{
+	return c.rawcon.LocalAddr().String()
+}
+
+func (c *CmdCon)GetRemoteHost()string{
+	return c.rawcon.RemoteAddr().String()
+}
+
 func (c *CmdCon)ReadCMDReq()(*FTPCmdReq,error){
 	str,err := c.reader.ReadString('\n')
 	if err != nil{
