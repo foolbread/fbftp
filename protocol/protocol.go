@@ -93,6 +93,7 @@ var commandMap map[string]Command = map[string]Command{
 	"USER":&commandUser{},
 	"PASS":&commandPass{},
 	"LIST":&commandList{},
+	"PWD" :&commandPwd{},
 }
 
 var(

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"errors"
 	"fmt"
+	//"github.com/foolbread/fbcommon/golog"
 )
 
 const (
@@ -59,7 +60,7 @@ func (c *CmdCon)ReadCMDReq()(*FTPCmdReq,error){
 	}
 
 	r := new(FTPCmdReq)
-	r.Cmd = fields[0]
+	r.Cmd = strings.TrimSpace(fields[0])
 	if len(fields) > 1{
 		r.Arg = strings.TrimSpace(fields[1])
 	}
@@ -69,6 +70,7 @@ func (c *CmdCon)ReadCMDReq()(*FTPCmdReq,error){
 
 func (c *CmdCon)WriteMsg(code int,msg string)error{
 	_,err := c.writer.Write([]byte(fmt.Sprintf(msg_fmt,code,msg)))
+	c.writer.Flush()
 
 	return err
 }
