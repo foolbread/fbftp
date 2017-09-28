@@ -41,9 +41,9 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 	}
 
 	if login{
-		sess.WriteMsg(FTP_LOGINOK,"Login successful.")
+		sess.CtrlCon.WriteMsg(FTP_LOGINOK,"Login successful.")
 	}else{
-		sess.WriteMsg(FTP_BADPBSZ,"Login incorrect.")
+		sess.CtrlCon.WriteMsg(FTP_BADPBSZ,"Login incorrect.")
 	}
 
 	return nil

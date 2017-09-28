@@ -26,7 +26,8 @@ func (p *commandFeat)RequireParam()bool{
 }
 
 func (p *commandFeat)Execute(sess *session.FTPSession, arg string)error{
-	return sess.WriteMsg(FTP_FEAT,"Features:\r\n" +
-		"	PASV\r\n"+
-		"End")
+	 sess.CtrlCon.WriteHyphen(FTP_FEAT,"Features:")
+	 sess.CtrlCon.WriteRaw(" PASV\r\n")
+
+	 return sess.CtrlCon.WriteMsg(FTP_FEAT,"End")
 }

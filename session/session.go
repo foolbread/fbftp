@@ -11,6 +11,7 @@ import (
 	"github.com/foolbread/fbftp/con"
 	"github.com/foolbread/fbftp/user"
 	"github.com/foolbread/fbftp/acl"
+	"github.com/foolbread/fbftp/storage"
 )
 
 func InitSession(){
@@ -23,8 +24,9 @@ type FTPSession struct {
 	UserAcl   *acl.UserACL
 	CurPath   string
 	LocalHost string
+	Storage	  storage.FTPStorage
 	CtrlCon   *con.CmdCon
-	DataCon   *con.PasvCon
+	DataCon   con.DataCon
 }
 
 func NewFTPSession()*FTPSession{
@@ -45,10 +47,6 @@ func (s *FTPSession)Close(){
 
 func (s *FTPSession)RecvCMD()(*con.FTPCmdReq,error){
 	return s.CtrlCon.ReadCMDReq()
-}
-
-func (s *FTPSession)WriteMsg(code int,msg string)error{
-	return s.CtrlCon.WriteMsg(code,msg)
 }
 
 func (s *FTPSession)IsLogin()bool{

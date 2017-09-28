@@ -26,6 +26,5 @@ func (p *commandList)RequireParam()bool{
 }
 
 func (p *commandList)Execute(sess *session.FTPSession, arg string)error{
-
 	return nil
 }

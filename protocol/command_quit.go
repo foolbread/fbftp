@@ -26,7 +26,7 @@ func (p *commandQuit)RequireParam()bool{
 }
 
 func (p *commandQuit)Execute(sess *session.FTPSession, arg string)error{
-	sess.WriteMsg(FTP_GOODBYE,"Goodbye.")
+	sess.CtrlCon.WriteMsg(FTP_GOODBYE,"Goodbye.")
 
 	sess.Close()
 	return nil

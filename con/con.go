@@ -22,3 +22,9 @@ func InitCon(){
 func GetFreePassPort()int{
 	return g_pasvportManager.GetFreePasvPort()
 }
+
+type DataCon interface {
+	Read([]byte)(int,error)
+	Write([]byte)(int,error)
+	Close()
+}

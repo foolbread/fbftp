@@ -26,5 +26,5 @@ func (p *commandSyst)RequireParam()bool{
 }
 
 func (p *commandSyst)Execute(sess *session.FTPSession, arg string)error{
-	return sess.WriteMsg(FTP_SYSTOK,"UNIX Type: L8")
+	return sess.CtrlCon.WriteMsg(FTP_SYSTOK,"UNIX Type: L8")
 }

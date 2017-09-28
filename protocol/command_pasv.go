@@ -42,6 +42,6 @@ func (p *commandPasv)Execute(sess *session.FTPSession,arg string)error{
 	p1 := port/256
 	p2 := port&255
 
-	return sess.WriteMsg(FTP_PASVOK,fmt.Sprintf("Entering Passive Mode (%s,%s,%s,%s,%d,%d)",
+	return sess.CtrlCon.WriteMsg(FTP_PASVOK,fmt.Sprintf("Entering Passive Mode (%s,%s,%s,%s,%d,%d)",
 		ip[0],ip[1],ip[2],ip[3],p1,p2))
 }

@@ -91,6 +91,7 @@ const(
 
 var commandMap map[string]Command = map[string]Command{
 	"FEAT":&commandFeat{},
+	"HELP":&commandHelp{},
 	"LIST":&commandList{},
 	"PASS":&commandPass{},
 	"PASV":&commandPasv{},

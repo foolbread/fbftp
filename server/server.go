@@ -63,7 +63,7 @@ func (s *fbFTPServer)work(c *net.TCPConn){
 	sess := session.NewFTPSession()
 	sess.CtrlCon = con.NewCmdCon(c)
 
-	sess.WriteMsg(protocol.FTP_GREET,config.GetConfig().GetWelcomeMsg())
+	sess.CtrlCon.WriteMsg(protocol.FTP_GREET,config.GetConfig().GetWelcomeMsg())
 
 	for{
 		req,err := sess.RecvCMD()

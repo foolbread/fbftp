@@ -27,5 +27,5 @@ func (p *commandPwd)RequireParam()bool{
 }
 
 func (p *commandPwd)Execute(sess *session.FTPSession, arg string)error{
-	return 	sess.WriteMsg(FTP_PWDOK,fmt.Sprintf("\"%s\" is the current directory",sess.CurPath))
+	return 	sess.CtrlCon.WriteMsg(FTP_PWDOK,fmt.Sprintf("\"%s\" is the current directory",sess.CurPath))
 }

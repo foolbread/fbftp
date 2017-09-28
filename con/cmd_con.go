@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	msg_fmt = "%d %s\r\n"
+	single_msg_fmt = "%d %s\r\n"
+	multi_msg_fmt = "%d-%s\r\n"
 )
 
 type FTPCmdReq struct {
@@ -77,7 +78,21 @@ func (c *CmdCon)ReadCMDReq()(*FTPCmdReq,error){
 }
 
 func (c *CmdCon)WriteMsg(code int,msg string)error{
-	_,err := c.writer.Write([]byte(fmt.Sprintf(msg_fmt,code,msg)))
+	_,err := c.writer.Write([]byte(fmt.Sprintf(single_msg_fmt,code,msg)))
+	c.writer.Flush()
+
+	return err
+}
+
+func (c *CmdCon)WriteRaw(msg string)error{
+	_,err := c.writer.Write([]byte(msg))
+	c.writer.Flush()
+
+	return err
+}
+
+func (c *CmdCon)WriteHyphen(code int,msg string)error{
+	_,err := c.writer.Write([]byte(fmt.Sprintf(multi_msg_fmt,code,msg)))
 	c.writer.Flush()
 
 	return err

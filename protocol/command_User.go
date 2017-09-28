@@ -28,5 +28,5 @@ func (p *commandUser)RequireParam()bool{
 func (p *commandUser)Execute(sess *session.FTPSession, arg string)error{
 	sess.UserName = arg
 
-	return sess.WriteMsg(FTP_GIVEPWORD,"Please specify the password.")
+	return sess.CtrlCon.WriteMsg(FTP_GIVEPWORD,"Please specify the password.")
 }
