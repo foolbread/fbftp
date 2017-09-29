@@ -13,6 +13,10 @@ type S3Storage struct {
 
 }
 
+func (s *S3Storage)ChangeDir(dir string)(bool,error){
+	return true,nil
+}
+
 func (s *S3Storage)ListFile(dir string)([]*FTPFileInfo,error){
 	return nil,nil
 }

@@ -8,11 +8,22 @@ package storage
 import (
 	"io"
 	"io/ioutil"
+	"os"
 )
 
 type DiskStorage struct {
 
 }
+
+func (s *DiskStorage)ChangeDir(dir string)(bool,error){
+	info,err := os.Stat(dir)
+	if err != nil{
+		return false,err
+	}
+
+	return info.IsDir(),nil
+}
+
 
 func (s *DiskStorage)ListFile(dir string)([]*FTPFileInfo,error){
 	infos,err := ioutil.ReadDir(dir)
