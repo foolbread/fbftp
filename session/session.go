@@ -12,6 +12,8 @@ import (
 	"github.com/foolbread/fbftp/user"
 	"github.com/foolbread/fbftp/acl"
 	"github.com/foolbread/fbftp/storage"
+
+	"path/filepath"
 )
 
 func InitSession(){
@@ -51,4 +53,13 @@ func (s *FTPSession)RecvCMD()(*con.FTPCmdReq,error){
 
 func (s *FTPSession)IsLogin()bool{
 	return s.UserInfo != nil
+}
+
+func (s *FTPSession)BuildPath(p string)(string){
+	ret := filepath.Clean(filepath.Join(s.UserAcl.GetWorkPath(),s.CurPath,p))
+	if len(ret) < len(s.UserAcl.GetWorkPath()){
+		return ret
+	}
+
+	return ret
 }
