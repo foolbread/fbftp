@@ -7,7 +7,6 @@ package protocol
 
 import (
 	"github.com/foolbread/fbftp/session"
-	"path"
 	"fmt"
 )
 
@@ -36,9 +35,7 @@ func (p *commandList)Execute(sess *session.FTPSession, arg string)error{
 		return sess.CtrlCon.WriteMsg(FTP_NOPERM,"Permission denied.")
 	}
 
-	arg = path.Clean(arg)
-
-	infos,err := sess.Storage.ListFile(path.Join(sess.UserAcl.GetWorkPath(),arg))
+	infos,err := sess.Storage.ListFile(sess.BuildPath(arg))
 	if err !=nil{
 		return err
 	}
