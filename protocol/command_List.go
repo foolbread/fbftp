@@ -35,9 +35,13 @@ func (p *commandList)Execute(sess *session.FTPSession, arg string)error{
 		return sess.CtrlCon.WriteMsg(FTP_NOPERM,"Permission denied.")
 	}
 
+	if arg == "-a"{
+		arg = ""
+	}
+
 	infos,err := sess.Storage.ListFile(sess.BuildPath(arg))
-	if err !=nil{
-		return err
+	if err != nil{
+		fmt.Println(err)
 	}
 
 	sess.CtrlCon.WriteMsg(FTP_DATACONN,"Here comes the directory listing.")
