@@ -98,6 +98,7 @@ var commandMap map[string]Command = map[string]Command{
 	"PASV":&commandPasv{},
 	"PWD" :&commandPwd{},
 	"QUIT":&commandQuit{},
+	"SIZE":&commandSize{},
 	"STAT":&commandStat{},
 	"SYST":&commandSyst{},
 	"TYPE":&commandType{},
