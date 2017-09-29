@@ -25,20 +25,36 @@ func (s *DiskStorage)ChangeDir(dir string)(bool,error){
 }
 
 
-func (s *DiskStorage)ListFile(dir string)([]*FTPFileInfo,error){
-	infos,err := ioutil.ReadDir(dir)
+func (s *DiskStorage)ListFile(file string)([]*FTPFileInfo,error){
+	info,err := os.Stat(file)
 	if err != nil{
 		return nil,err
 	}
 
 	var ret []*FTPFileInfo
-	for _,v := range infos{
+	if info.IsDir(){
+		infos,err := ioutil.ReadDir(file)
+		if err != nil{
+			return nil,err
+		}
+
+		for _,v := range infos{
+			f := newFTPFileInfo()
+			f.Name = v.Name()
+			f.IsDir = v.IsDir()
+			f.Mode = v.Mode()
+			f.Size = v.Size()
+			f.ModTime = v.ModTime()
+
+			ret = append(ret,f)
+		}
+	}else{
 		f := newFTPFileInfo()
-		f.Name = v.Name()
-		f.IsDir = v.IsDir()
-		f.Mode = v.Mode()
-		f.Size = v.Size()
-		f.ModTime = v.ModTime()
+		f.Name = info.Name()
+		f.IsDir = info.IsDir()
+		f.Mode = info.Mode()
+		f.Size = info.Size()
+		f.ModTime = info.ModTime()
 
 		ret = append(ret,f)
 	}
