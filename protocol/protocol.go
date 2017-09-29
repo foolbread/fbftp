@@ -90,6 +90,7 @@ const(
 )
 
 var commandMap map[string]Command = map[string]Command{
+	"CWD" :&commandCwd{},
 	"FEAT":&commandFeat{},
 	"HELP":&commandHelp{},
 	"LIST":&commandList{},
@@ -97,6 +98,7 @@ var commandMap map[string]Command = map[string]Command{
 	"PASV":&commandPasv{},
 	"PWD" :&commandPwd{},
 	"QUIT":&commandQuit{},
+	"STAT":&commandStat{},
 	"SYST":&commandSyst{},
 	"TYPE":&commandType{},
 	"USER":&commandUser{},
