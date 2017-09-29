@@ -98,6 +98,7 @@ var commandMap map[string]Command = map[string]Command{
 	"PWD" :&commandPwd{},
 	"QUIT":&commandQuit{},
 	"SYST":&commandSyst{},
+	"TYPE":&commandType{},
 	"USER":&commandUser{},
 }
 
@@ -118,6 +119,7 @@ type Command interface {
 func DisPatchCmd(sess *session.FTPSession,req *con.FTPCmdReq)error{
 	e := commandMap[strings.ToUpper(req.Cmd)]
 	if e == nil{
+		sess.CtrlCon.WriteMsg(FTP_BADCMD,"Unknown command.")
 		return errUnknowCmd
 	}
 

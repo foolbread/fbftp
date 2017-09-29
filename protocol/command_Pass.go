@@ -9,6 +9,7 @@ import (
 	"github.com/foolbread/fbftp/session"
 	"github.com/foolbread/fbftp/user"
 	"github.com/foolbread/fbftp/acl"
+	"github.com/foolbread/fbftp/storage"
 )
 
 type commandPass struct {
@@ -36,6 +37,12 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 		if useracl != nil{
 			sess.UserAcl = useracl
 			sess.CurPath = "/"
+			switch sess.UserInfo.GetUserType() {
+			case user.COMMON_USER:
+				sess.Storage = &storage.DiskStorage{}
+			case user.CLOUD_USER:
+				sess.Storage = &storage.S3Storage{}
+			}
 			login = true
 		}
 	}
