@@ -30,6 +30,10 @@ func (p *commandRnto)Execute(sess *session.FTPSession, arg string)error{
 		return sess.CtrlCon.WriteMsg(FTP_NOPERM,"Permission denied.")
 	}
 
+	defer func(){
+		sess.RnfrStr = ""
+	}()
+
 	if len(sess.RnfrStr) == 0{
 		return sess.CtrlCon.WriteMsg(FTP_NEEDRNFR,"RNFR required first.")
 	}
