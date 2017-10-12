@@ -8,6 +8,7 @@ package protocol
 import (
 	"github.com/foolbread/fbftp/session"
 	"strings"
+	"github.com/foolbread/fbcommon/golog"
 )
 
 type commandCwd struct {
@@ -49,6 +50,8 @@ func (p *commandCwd)Execute(sess *session.FTPSession, arg string)error{
 	}else{
 		sess.CurPath = cp
 	}
+
+	golog.Info("curpath:",sess.CurPath)
 
 	return sess.CtrlCon.WriteMsg(FTP_CWDOK,"Directory successfully changed.")
 }

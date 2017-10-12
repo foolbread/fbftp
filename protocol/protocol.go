@@ -92,6 +92,7 @@ const(
 var commandMap map[string]Command = map[string]Command{
 	"CDUP":&commandCdup{},
 	"CWD" :&commandCwd{},
+	"DELE":&commandDele{},
 	"FEAT":&commandFeat{},
 	"HELP":&commandHelp{},
 	"LIST":&commandList{},
