@@ -79,7 +79,7 @@ func (s *DiskStorage)ListFile(file string)([]*FTPFileInfo,error){
 }
 
 func (s *DiskStorage)ReName(oldname string, newname string)error{
-	return nil
+	return 	os.Rename(oldname,newname)
 }
 
 func (s *DiskStorage)MKDir(dir string)error{
