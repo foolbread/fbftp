@@ -26,6 +26,7 @@ type FTPSession struct {
 	UserAcl   *acl.UserACL
 	CurPath   string
 	LocalHost string
+	RnfrStr   string
 	Storage	  storage.FTPStorage
 	CtrlCon   *con.CmdCon
 	DataCon   con.DataCon
