@@ -51,6 +51,6 @@ type FTPStorage interface {
 	MKDir(string)error
 	DeleteFile(string)error
 	DeleteDir(string)error
-	GetFile(string)(io.ReadCloser,error)
+	GetFile(string,io.Writer)(int64,error)
 	StoreFile(string,io.Reader)(int64,error)
 }

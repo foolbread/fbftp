@@ -94,8 +94,14 @@ func (s *DiskStorage)DeleteDir(dir string)error{
 	return nil
 }
 
-func (s *DiskStorage)GetFile(filename string)(io.ReadCloser,error){
-	return nil,nil
+func (s *DiskStorage)GetFile(filename string,wr io.Writer)(int64,error){
+	fl,err := os.Open(filename)
+	if err != nil{
+		return 0,err
+	}
+	defer fl.Close()
+
+	return io.Copy(wr,fl)
 }
 
 func (s *DiskStorage)StoreFile(filename string,rd io.Reader)(int64,error){

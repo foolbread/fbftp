@@ -41,8 +41,8 @@ func (s *S3Storage)DeleteDir(dir string)error{
 	return nil
 }
 
-func (s *S3Storage)GetFile(filename string)(io.ReadCloser,error){
-	return nil,nil
+func (s *S3Storage)GetFile(filename string, wr io.Writer)(int64,error){
+	return 0,nil
 }
 
 func (s *S3Storage)StoreFile(filename string, rd io.Reader)(int64,error){
