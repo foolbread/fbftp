@@ -101,6 +101,7 @@ var commandMap map[string]Command = map[string]Command{
 	"PWD" :&commandPwd{},
 	"QUIT":&commandQuit{},
 	"RETR":&commandRetr{},
+	"RMD" :&commandRmd{},
 	"SIZE":&commandSize{},
 	"STAT":&commandStat{},
 	"STOR":&commandStor{},
