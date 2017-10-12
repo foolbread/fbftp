@@ -20,7 +20,7 @@ func InitAcl(){
 const (
 	ONLY_READ = 1
 	ONLY_WRITE = 2
-	READ_WRITE = ONLY_READ&ONLY_WRITE
+	READ_WRITE = ONLY_READ|ONLY_WRITE
 )
 
 func GetUserAcl(username string)*UserACL{
