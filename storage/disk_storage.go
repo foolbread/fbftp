@@ -91,7 +91,7 @@ func (s *DiskStorage)DeleteFile(filename string)error{
 }
 
 func (s *DiskStorage)DeleteDir(dir string)error{
-	return nil
+	return os.Remove(dir)
 }
 
 func (s *DiskStorage)GetFile(filename string,wr io.Writer)(int64,error){
