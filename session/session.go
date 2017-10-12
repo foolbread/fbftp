@@ -58,7 +58,7 @@ func (s *FTPSession)IsLogin()bool{
 func (s *FTPSession)BuildPath(p string)(string){
 	ret := filepath.Clean(filepath.Join(s.UserAcl.GetWorkPath(),s.CurPath,p))
 	if len(ret) < len(s.UserAcl.GetWorkPath()){
-		return ret
+		return s.UserAcl.GetWorkPath()
 	}
 
 	return ret
