@@ -87,7 +87,7 @@ func (s *DiskStorage)MKDir(dir string)error{
 }
 
 func (s *DiskStorage)DeleteFile(filename string)error{
-	return nil
+	return os.Remove(filename)
 }
 
 func (s *DiskStorage)DeleteDir(dir string)error{
