@@ -44,6 +44,7 @@ func (s *FTPFileInfo)TransforModeToString()string{
 }
 
 type FTPStorage interface {
+	Stat(string)(*FTPFileInfo,error)
 	ChangeDir(string)(bool,error)
 	ListFile(string)([]*FTPFileInfo,error)
 	ReName(string, string)error

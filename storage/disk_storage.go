@@ -15,6 +15,22 @@ type DiskStorage struct {
 
 }
 
+func (s *DiskStorage)Stat(file string)(*FTPFileInfo,error){
+	info,err := os.Stat(file)
+	if err != nil{
+		return nil,err
+	}
+
+	ret := newFTPFileInfo()
+	ret.Name = info.Name()
+	ret.IsDir = info.IsDir()
+	ret.Mode = info.Mode()
+	ret.Size = info.Size()
+	ret.ModTime = info.ModTime()
+
+	return ret,nil
+}
+
 func (s *DiskStorage)ChangeDir(dir string)(bool,error){
 	info,err := os.Stat(dir)
 	if err != nil{
@@ -83,5 +99,11 @@ func (s *DiskStorage)GetFile(filename string)(io.ReadCloser,error){
 }
 
 func (s *DiskStorage)StoreFile(filename string,rd io.Reader)(int64,error){
-	return 0,nil
+	fl,err := os.OpenFile(filename,os.O_CREATE|os.O_TRUNC|os.O_WRONLY,0777)
+	if err != nil{
+		return 0,err
+	}
+	defer fl.Close()
+
+	return io.Copy(fl,rd)
 }
