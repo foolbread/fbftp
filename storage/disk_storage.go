@@ -83,7 +83,7 @@ func (s *DiskStorage)ReName(oldname string, newname string)error{
 }
 
 func (s *DiskStorage)MKDir(dir string)error{
-	return nil
+	return os.Mkdir(dir,0777)
 }
 
 func (s *DiskStorage)DeleteFile(filename string)error{
