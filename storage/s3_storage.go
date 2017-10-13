@@ -7,10 +7,40 @@ package storage
 
 import (
 	"io"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 )
 
 type S3Storage struct {
+	Bucket string
+	AccKey string
+	SecKey string
+	EndPoint string
+	Token string
 
+	cli *s3.S3
+}
+
+func NewS3Storage(acckey string,seckey string,endpoint string,token string,bucket string)*S3Storage{
+	r := new(S3Storage)
+	r.AccKey = acckey
+	r.SecKey = seckey
+	r.EndPoint = endpoint
+	r.Token = token
+	r.Bucket = bucket
+
+	cre := credentials.NewStaticCredentials(acckey,seckey,token)
+
+	config := aws.NewConfig().WithRegion("us-east-1").
+		WithEndpoint(endpoint).
+		WithCredentials(cre).WithS3ForcePathStyle(true)
+
+	sess,_ := session.NewSession(config)
+	r.cli = s3.New(sess)
+
+	return r
 }
 
 func (s *S3Storage)Stat(file string)(*FTPFileInfo,error){
