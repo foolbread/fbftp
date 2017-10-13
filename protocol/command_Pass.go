@@ -39,7 +39,7 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 			sess.CurPath = "/"
 			switch sess.UserInfo.GetUserType() {
 			case user.COMMON_USER:
-				sess.Storage = &storage.DiskStorage{}
+				sess.Storage = storage.NewDiskStorage()
 			case user.CLOUD_USER:
 				sess.Storage = &storage.S3Storage{}
 			}

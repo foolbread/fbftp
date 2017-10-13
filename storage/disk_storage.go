@@ -15,6 +15,12 @@ type DiskStorage struct {
 
 }
 
+func NewDiskStorage()*DiskStorage{
+	r := new(DiskStorage)
+
+	return r
+}
+
 func (s *DiskStorage)Stat(file string)(*FTPFileInfo,error){
 	info,err := os.Stat(file)
 	if err != nil{
