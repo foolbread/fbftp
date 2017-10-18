@@ -7,44 +7,47 @@ package storage
 
 import (
 	"io"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/foolbread/fbftp/util"
+	"path/filepath"
+	"time"
+	"os"
 )
 
 type S3Storage struct {
 	Bucket string
-	AccKey string
-	SecKey string
-	EndPoint string
-	Token string
 
-	cli *s3.S3
+	cli *util.FBS3Client
 }
 
 func NewS3Storage(acckey string,seckey string,endpoint string,token string,bucket string)*S3Storage{
 	r := new(S3Storage)
-	r.AccKey = acckey
-	r.SecKey = seckey
-	r.EndPoint = endpoint
-	r.Token = token
 	r.Bucket = bucket
-
-	cre := credentials.NewStaticCredentials(acckey,seckey,token)
-
-	config := aws.NewConfig().WithRegion("us-east-1").
-		WithEndpoint(endpoint).
-		WithCredentials(cre).WithS3ForcePathStyle(true)
-
-	sess,_ := session.NewSession(config)
-	r.cli = s3.New(sess)
+	r.cli = util.NewFBS3Client(acckey,seckey,endpoint,token)
 
 	return r
 }
 
 func (s *S3Storage)Stat(file string)(*FTPFileInfo,error){
-	return nil,nil
+	var info *FTPFileInfo = newFTPFileInfo()
+	res,err := s.cli.HeadObject(s.Bucket,file)
+	if err != nil{
+		//may be dir
+		res,err := s.cli.ListFile(s.Bucket,file)
+		if err != nil || len(res.CommonPrefixes) == 0{
+			return nil,os.ErrNotExist
+		}
+
+		info.IsDir = true
+		info.ModTime = time.Now()
+		info.Mode = os.ModeDir
+	}else{
+		info.IsDir = false
+		info.Name = filepath.Base(file)
+		info.Size = *res.ContentLength
+		info.ModTime = *res.LastModified
+		info.Mode = os.ModePerm
+	}
+	return info,nil
 }
 
 func (s *S3Storage)ChangeDir(dir string)(bool,error){
