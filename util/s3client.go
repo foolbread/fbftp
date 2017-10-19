@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"path"
 	"net/url"
+	"io"
 )
 
 type FBS3Client struct {
@@ -57,6 +58,15 @@ func (u *FBS3Client)CopyObject(newbucket string, newkey string, oldbucket string
 	in.SetCopySource(path.Join("/",oldbucket,url.QueryEscape(oldkey)))
 
 	return u.cli.CopyObject(&in)
+}
+
+func (u *FBS3Client)PutObject(bucket string, key string, wr io.ReadSeeker)(*s3.PutObjectOutput,error){
+	var in s3.PutObjectInput
+	in.SetBucket(bucket)
+	in.SetKey(key)
+	in.SetBody(wr)
+
+	return u.cli.PutObject(&in)
 }
 
 func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
