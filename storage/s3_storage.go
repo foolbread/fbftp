@@ -98,8 +98,8 @@ func (s *S3Storage)ReName(oldname string, newname string)error{
 	}
 
 	for _,v := range out.Contents{
-		newkey := strings.Replace(*out.Name,oldname,newname,1)
-		_,err = s.cli.CopyObject(s.Bucket,newkey,s.Bucket,*out.Name)
+		newkey := strings.Replace(*v.Key,oldname,newname,1)
+		_,err = s.cli.CopyObject(s.Bucket,newkey,s.Bucket,*v.Key)
 		if err != nil{
 			return err
 		}
@@ -124,6 +124,18 @@ func (s *S3Storage)DeleteFile(filename string)error{
 }
 
 func (s *S3Storage)DeleteDir(dir string)error{
+	out,err := s.cli.ListAllFile(s.Bucket,dir)
+	if err != nil{
+		return err
+	}
+
+	for _,v := range out.Contents{
+		_,err = s.cli.DeleteObject(s.Bucket,*v.Key)
+		if err != nil{
+			return err
+		}
+	}
+
 	return nil
 }
 
