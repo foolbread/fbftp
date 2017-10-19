@@ -40,6 +40,13 @@ func (u *FBS3Client)HeadObject(bucket string, key string)(*s3.HeadObjectOutput,e
 	return u.cli.HeadObject(&in)
 }
 
+func (u *FBS3Client)DeleteObject(bucket string, key string)(*s3.DeleteObjectOutput,error){
+	var in s3.DeleteObjectInput
+	in.SetBucket(bucket)
+	in.SetKey(key)
+
+	return u.cli.DeleteObject(&in)
+}
 
 
 func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
