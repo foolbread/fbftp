@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"time"
 	"os"
+	"strings"
 )
 
 type S3Storage struct {
@@ -91,6 +92,23 @@ func (s *S3Storage)ListFile(dir string)([]*FTPFileInfo,error){
 }
 
 func (s *S3Storage)ReName(oldname string, newname string)error{
+	out,err := s.cli.ListAllFile(s.Bucket,oldname)
+	if err != nil{
+		return err
+	}
+
+	for _,v := range out.Contents{
+		newkey := strings.Replace(*out.Name,oldname,newname,1)
+		_,err = s.cli.CopyObject(s.Bucket,newkey,s.Bucket,*out.Name)
+		if err != nil{
+			return err
+		}
+
+		_,err = s.cli.DeleteObject(s.Bucket,*out.Name)
+		if err != nil{
+			return err
+		}
+	}
 
 	return nil
 }
