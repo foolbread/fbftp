@@ -40,19 +40,71 @@ func (u *FBS3Client)HeadObject(bucket string, key string)(*s3.HeadObjectOutput,e
 	return u.cli.HeadObject(&in)
 }
 
-func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
-	var in s3.ListObjectsInput
-	in.SetBucket(bucket)
-	in.SetPrefix(key)
-	in.SetDelimiter("/")
 
-	return u.cli.ListObjects(&in)
+
+func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
+	var ret *s3.ListObjectsOutput = new(s3.ListObjectsOutput)
+	var nextkey string
+	for {
+		var in s3.ListObjectsInput
+		in.SetBucket(bucket)
+		in.SetPrefix(key)
+		in.SetDelimiter("/")
+		in.SetMarker(nextkey)
+
+		out,err := u.cli.ListObjects(&in)
+		if err != nil{
+			return nil,err
+		}
+
+		for _,v := range out.CommonPrefixes{
+			ret.CommonPrefixes = append(ret.CommonPrefixes,v)
+		}
+
+		for _,v := range out.Contents{
+			ret.Contents = append(ret.Contents,v)
+		}
+
+		if !*out.IsTruncated{
+			break
+		}
+
+		nextkey = *out.NextMarker
+	}
+
+
+	return ret,nil
 }
 
 func (u *FBS3Client)ListAllFile(bucket string, key string)(*s3.ListObjectsOutput,error){
-	var in s3.ListObjectsInput
-	in.SetBucket(bucket)
-	in.SetPrefix(key)
+	var ret *s3.ListObjectsOutput = new(s3.ListObjectsOutput)
+	var nextkey string
 
-	return u.cli.ListObjects(&in)
+	for{
+		var in s3.ListObjectsInput
+		in.SetBucket(bucket)
+		in.SetPrefix(key)
+		in.SetMarker(nextkey)
+
+		out,err := u.cli.ListObjects(&in)
+		if err != nil{
+			return nil,err
+		}
+
+		for _,v := range out.CommonPrefixes{
+			ret.CommonPrefixes = append(ret.CommonPrefixes,v)
+		}
+
+		for _,v := range out.Contents{
+			ret.Contents = append(ret.Contents,v)
+		}
+
+		if !*out.IsTruncated{
+			break
+		}
+
+		nextkey = *out.NextMarker
+	}
+
+	return ret,nil
 }
