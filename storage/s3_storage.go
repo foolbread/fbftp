@@ -118,7 +118,9 @@ func (s *S3Storage)MKDir(dir string)error{
 }
 
 func (s *S3Storage)DeleteFile(filename string)error{
-	return nil
+	_,err := s.cli.DeleteObject(s.Bucket,filename)
+
+	return err
 }
 
 func (s *S3Storage)DeleteDir(dir string)error{
