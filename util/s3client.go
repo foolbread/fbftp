@@ -10,6 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"path"
+	"net/url"
 )
 
 type FBS3Client struct {
@@ -48,6 +50,14 @@ func (u *FBS3Client)DeleteObject(bucket string, key string)(*s3.DeleteObjectOutp
 	return u.cli.DeleteObject(&in)
 }
 
+func (u *FBS3Client)CopyObject(newbucket string, newkey string, oldbucket string, oldkey string)(*s3.CopyObjectOutput,error){
+	var in s3.CopyObjectInput
+	in.SetBucket(newbucket)
+	in.SetKey(newkey)
+	in.SetCopySource(path.Join("/",oldbucket,url.QueryEscape(oldkey)))
+
+	return u.cli.CopyObject(&in)
+}
 
 func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
 	var ret *s3.ListObjectsOutput = new(s3.ListObjectsOutput)
