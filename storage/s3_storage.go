@@ -51,14 +51,47 @@ func (s *S3Storage)Stat(file string)(*FTPFileInfo,error){
 }
 
 func (s *S3Storage)ChangeDir(dir string)(bool,error){
-	return true,nil
+	info,err := s.Stat(dir)
+	if err != nil{
+		return false,err
+	}
+
+	return info.IsDir,nil
 }
 
 func (s *S3Storage)ListFile(dir string)([]*FTPFileInfo,error){
-	return nil,nil
+	out,err := s.cli.ListFile(s.Bucket,dir)
+	if err != nil{
+		return nil,err
+	}
+
+	var ret []*FTPFileInfo
+	for _,v := range out.CommonPrefixes{
+		i := newFTPFileInfo()
+		i.IsDir = true
+		i.Name = filepath.Base(*v.Prefix)
+		i.Mode = os.ModeDir
+		i.ModTime = time.Now()
+
+		ret = append(ret,i)
+	}
+
+	for _,v := range out.Contents{
+		i := newFTPFileInfo()
+		i.IsDir = false
+		i.Name = filepath.Base(*v.Key)
+		i.Mode = os.ModePerm
+		i.Size = *v.Size
+		i.ModTime = *v.LastModified
+
+		ret = append(ret,i)
+	}
+
+	return ret,nil
 }
 
 func (s *S3Storage)ReName(oldname string, newname string)error{
+
 	return nil
 }
 
@@ -75,6 +108,7 @@ func (s *S3Storage)DeleteDir(dir string)error{
 }
 
 func (s *S3Storage)GetFile(filename string, wr io.Writer)(int64,error){
+
 	return 0,nil
 }
 
