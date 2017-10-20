@@ -12,6 +12,8 @@ import (
 	"time"
 	"os"
 	"strings"
+	"bufio"
+	"bytes"
 )
 
 type S3Storage struct {
@@ -140,8 +142,12 @@ func (s *S3Storage)DeleteDir(dir string)error{
 }
 
 func (s *S3Storage)GetFile(filename string, wr io.Writer)(int64,error){
+	out,err := s.cli.DownloadObject(s.Bucket,filename)
+	if err != nil{
+		return 0,err
+	}
 
-	return 0,nil
+	return io.Copy(wr,out.Body)
 }
 
 func (s *S3Storage)StoreFile(filename string, rd io.Reader)(int64,error){
