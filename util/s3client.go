@@ -60,13 +60,21 @@ func (u *FBS3Client)CopyObject(newbucket string, newkey string, oldbucket string
 	return u.cli.CopyObject(&in)
 }
 
-func (u *FBS3Client)PutObject(bucket string, key string, wr io.ReadSeeker)(*s3.PutObjectOutput,error){
+func (u *FBS3Client)PutObject(bucket string, key string, rd io.ReadSeeker)(*s3.PutObjectOutput,error){
 	var in s3.PutObjectInput
 	in.SetBucket(bucket)
 	in.SetKey(key)
-	in.SetBody(wr)
+	in.SetBody(rd)
 
 	return u.cli.PutObject(&in)
+}
+
+func (u *FBS3Client)DownloadObject(bucket string, key string)(*s3.GetObjectOutput,error){
+	var in s3.GetObjectInput
+	in.SetBucket(bucket)
+	in.SetKey(key)
+
+	return u.cli.GetObject(&in)
 }
 
 func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
