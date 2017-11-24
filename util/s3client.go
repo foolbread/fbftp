@@ -15,6 +15,11 @@ import (
 	"io"
 )
 
+type FBS3PieceInfo struct {
+	Idx  int64
+	Etag string
+}
+
 type FBS3Client struct {
 	cli *s3.S3
 }
@@ -77,7 +82,52 @@ func (u *FBS3Client)DownloadObject(bucket string, key string)(*s3.GetObjectOutpu
 	return u.cli.GetObject(&in)
 }
 
-func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,error){
+func (u *FBS3Client)WriteObject(bucket string, key string)error{
+	return nil
+}
+
+func (u *FBS3Client) CreateMutilPartUpload(bucket string, key string)(*s3.CreateMultipartUploadOutput,error){
+	var in s3.CreateMultipartUploadInput
+	in.SetBucket(bucket)
+	in.SetKey(key)
+
+	return u.cli.CreateMultipartUpload(&in)
+}
+
+func (u *FBS3Client)UploadPartObject(bucket string,key string,part int,uid string,rs io.ReadSeeker)(*s3.UploadPartOutput,error){
+	var in s3.UploadPartInput
+	in.SetBucket(bucket)
+	in.SetKey(key)
+	in.SetBody(rs)
+	in.SetPartNumber(int64(part))
+	in.SetUploadId(uid)
+
+	return u.cli.UploadPart(&in)
+}
+
+func (u *FBS3Client)CompleteMultiPartUpload(bucket string,key string,ps []*FBS3PieceInfo,uid string)(*s3.CompleteMultipartUploadOutput,error){
+	var cps []*s3.CompletedPart
+	for _,v := range ps{
+		var p s3.CompletedPart
+		p.SetPartNumber(v.Idx)
+		p.SetETag(v.Etag)
+
+		cps = append(cps, &p)
+	}
+
+	var cmu s3.CompletedMultipartUpload
+	cmu.SetParts(cps)
+
+	var in s3.CompleteMultipartUploadInput
+	in.SetBucket(bucket)
+	in.SetKey(key)
+	in.SetUploadId(uid)
+	in.SetMultipartUpload(&cmu)
+
+	return u.cli.CompleteMultipartUpload(&in)
+}
+
+func (u *FBS3Client) ListObjects(bucket string, key string)(*s3.ListObjectsOutput,error){
 	var ret *s3.ListObjectsOutput = new(s3.ListObjectsOutput)
 	var nextkey string
 	for {
@@ -111,7 +161,7 @@ func (u *FBS3Client)ListFile(bucket string, key string)(*s3.ListObjectsOutput,er
 	return ret,nil
 }
 
-func (u *FBS3Client)ListAllFile(bucket string, key string)(*s3.ListObjectsOutput,error){
+func (u *FBS3Client) ListAllObjects(bucket string, key string)(*s3.ListObjectsOutput,error){
 	var ret *s3.ListObjectsOutput = new(s3.ListObjectsOutput)
 	var nextkey string
 
