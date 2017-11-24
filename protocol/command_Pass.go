@@ -41,7 +41,8 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 			case user.COMMON_USER:
 				sess.Storage = storage.NewDiskStorage()
 			case user.CLOUD_USER:
-				sess.Storage = &storage.S3Storage{}
+				ex := sess.UserInfo.GetUserExternInfo().(*user.CloudUserExternInfo)
+				sess.Storage = storage.NewS3Storage(ex.AccKey,ex.SecKey,ex.EndPoint,ex.Token,ex.Bucket)
 			}
 			login = true
 		}

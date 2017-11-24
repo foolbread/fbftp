@@ -15,7 +15,9 @@
         <user>
             <username>kaka</username>
             <password>234566</password>
+            <bucket>xixi</bucket>
             <endpoint>www.baidu.com</endpoint>
+            <token></token>
             <seckey>qtdxfwa3revhngpz7ujs</seckey>
             <acckey>vHkJc0NuWcNLE9SFTjH4dMoOBZpM+QnLytah10MU</acckey>
         </user>

@@ -156,7 +156,9 @@ type fbCloudUserConfig struct {
 	XMLName xml.Name `xml:"user"`
 	UserName string	`xml:"username"`
 	PassWord string `xml:"password"`
+	Bucket   string `xml:"bucket"`
 	EndPoint string `xml:"endpoint"`
+	Token  string   `xml:"token"`
 	AccKey string	`xml:"acckey"`
 	SecKey string	`xml:"seckey"`
 }

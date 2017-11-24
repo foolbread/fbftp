@@ -18,10 +18,18 @@ func newCommonUser(usr string,pass string)*commonUser{
 	return r
 }
 
-func (u *commonUser)GetUserType()int{
+func (u *commonUser)getPassWord()string{
+	return u.pass
+}
+
+func (u *commonUser)GetUserType()UserType{
 	return COMMON_USER
 }
 
 func (u *commonUser)GetUserName()string{
 	return u.user
+}
+
+func (u *commonUser)GetUserExternInfo()FBFTPUserExternInfo{
+	return nil
 }

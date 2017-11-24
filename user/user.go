@@ -19,6 +19,7 @@ func InitUser(){
 type UserType int
 
 const (
+	UNKNOWTYPE_USER = 0
 	COMMON_USER = 1
 	CLOUD_USER = 2
 )
@@ -26,15 +27,14 @@ const (
 func UserLogin(usr string,pwd string)FBFTPUser{
 	var ret FBFTPUser
 
-	if !g_userManager.checkUser(usr,pwd){
+	ret = g_userManager.getUser(usr)
+
+	if ret == nil{
 		return ret
 	}
 
-	switch g_userManager.getUserType(usr) {
-	case COMMON_USER:
-		ret = newCommonUser(usr,pwd)
-	case CLOUD_USER:
-		ret = newCloudUser(usr,pwd)
+	if ret.getPassWord() != pwd{
+		return nil
 	}
 
 	return ret
@@ -49,14 +49,12 @@ func initUserManager(){
 }
 
 type fbFTPUserManager struct {
-	userMap map[string]string
-	userTypeMap map[string]UserType
+	userMap map[string]FBFTPUser
 }
 
 func newfbFTPUserManager()*fbFTPUserManager{
 	r := new(fbFTPUserManager)
-	r.userMap = make(map[string]string)
-	r.userTypeMap = make(map[string]UserType)
+	r.userMap = make(map[string]FBFTPUser)
 
 	return r
 }
@@ -64,33 +62,27 @@ func newfbFTPUserManager()*fbFTPUserManager{
 func (u *fbFTPUserManager)updateCommonUser(){
 	commonUsers := config.GetConfig().GetAllCommonUsers()
 	for _,v := range commonUsers.Users{
-		u.userMap[v.UserName] = v.PassWord
-		u.userTypeMap[v.UserName] = COMMON_USER
+		u.userMap[v.UserName] = newCommonUser(v.UserName,v.PassWord)
 	}
 }
 
 func (u *fbFTPUserManager)updateCloudUser(){
 	cloudUsers := config.GetConfig().GetAllCloudUsers()
 	for _,v := range cloudUsers.Users{
-		u.userMap[v.UserName] = v.PassWord
-		u.userTypeMap[v.UserName] = CLOUD_USER
+		u.userMap[v.UserName] = newCloudUser(v.UserName,v.PassWord,v.Bucket,v.AccKey,v.SecKey,v.EndPoint,v.Token)
 	}
 }
 
-func (u *fbFTPUserManager)getUserType(usr string)UserType{
-	return u.userTypeMap[usr]
-}
-
-func (u *fbFTPUserManager)checkUser(usr string,password string)bool{
-	ps,ok := u.userMap[usr]
-	if !ok{
-		return false
-	}
-
-	return ps == password
+func (u *fbFTPUserManager)getUser(usr string)FBFTPUser{
+	return u.userMap[usr]
 }
 
 type FBFTPUser interface {
-	GetUserType()int
+	GetUserType()UserType
 	GetUserName()string
+	getPassWord()string
+	GetUserExternInfo()FBFTPUserExternInfo
+}
+
+type FBFTPUserExternInfo interface {
 }
