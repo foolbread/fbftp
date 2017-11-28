@@ -62,6 +62,7 @@ func newfbFTPUserManager()*fbFTPUserManager{
 func (u *fbFTPUserManager)updateCommonUser(){
 	commonUsers := config.GetConfig().GetAllCommonUsers()
 	for _,v := range commonUsers.Users{
+		golog.Info("[init common user]:","<username>:",v.UserName,"<password>:",v.PassWord)
 		u.userMap[v.UserName] = newCommonUser(v.UserName,v.PassWord)
 	}
 }
@@ -69,6 +70,7 @@ func (u *fbFTPUserManager)updateCommonUser(){
 func (u *fbFTPUserManager)updateCloudUser(){
 	cloudUsers := config.GetConfig().GetAllCloudUsers()
 	for _,v := range cloudUsers.Users{
+		golog.Info("[init cloud user]:","<username>:",v.UserName,"<password>:",v.PassWord,"<bucket>:",v.Bucket)
 		u.userMap[v.UserName] = newCloudUser(v.UserName,v.PassWord,v.Bucket,v.AccKey,v.SecKey,v.EndPoint,v.Token)
 	}
 }

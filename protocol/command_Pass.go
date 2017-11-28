@@ -13,7 +13,6 @@ import (
 )
 
 type commandPass struct {
-
 }
 
 func (p *commandPass)IsExtend()bool{
