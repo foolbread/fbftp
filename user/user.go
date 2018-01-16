@@ -30,7 +30,7 @@ func UserLogin(usr string,pwd string)FBFTPUser{
 	ret = g_userManager.getUser(usr)
 
 	if ret == nil{
-		return ret
+		return nil
 	}
 
 	if ret.getPassWord() != pwd{
