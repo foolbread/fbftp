@@ -22,8 +22,8 @@
 | PWD  |         当前路径          | 本地、S3  |
 | QUIT |         退出服务          | 本地、S3  |
 | RETR |         下载文件          | 本地、S3  |
-| RNFR |    把xxx重命名(配合RNTO)    | 本地、S3  |
-| RNTO |    重命名为xxx(配合RNFR)    | 本地、S3  |
+| RNFR |    把xxx重命名（配合RNTO）    | 本地、S3  |
+| RNTO |    重命名为xxx（配合RNFR）    | 本地、S3  |
 | RMD  |      删除目录（目录应为空）      | 本地、S3  |
 | SIZE |        获取文件大小         | 本地、S3  |
 | STAT |        获取文件信息         | 本地、S3  |
