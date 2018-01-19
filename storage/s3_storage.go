@@ -96,7 +96,6 @@ func (s *S3Storage)ListFile(dir string)([]*FTPFileInfo,error){
 
 	var ret []*FTPFileInfo
 	for _,v := range out.CommonPrefixes{
-		golog.Info("dir:",dir,"recv commonprefix:",*v.Prefix)
 		i := newFTPFileInfo()
 		i.IsDir = true
 		i.Name = filepath.Base(*v.Prefix)
@@ -110,7 +109,6 @@ func (s *S3Storage)ListFile(dir string)([]*FTPFileInfo,error){
 		if dir == *v.Key{
 			continue
 		}
-		golog.Info("dir:",dir,"recv content:",*v.Key)
 		i := newFTPFileInfo()
 		i.IsDir = false
 		i.Name = filepath.Base(*v.Key)

@@ -82,8 +82,8 @@ func (u *fbFTPUserManager)getUser(usr string)FBFTPUser{
 type FBFTPUser interface {
 	GetUserType()UserType
 	GetUserName()string
-	getPassWord()string
 	GetUserExternInfo()FBFTPUserExternInfo
+	getPassWord()string
 }
 
 type FBFTPUserExternInfo interface {
