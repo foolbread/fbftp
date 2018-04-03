@@ -26,5 +26,5 @@ func (p *commandType)RequireParam()bool{
 }
 
 func (p *commandType)Execute(sess *session.FTPSession, arg string)error{
-	return sess.CtrlCon.WriteMsg(FTP_TYPEOK,"Switching to ASCII mode.")
+	return sess.CtrlCon.WriteMsg(FTP_TYPEOK,"Sorry,only support binary mode.")
 }
