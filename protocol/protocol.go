@@ -97,6 +97,7 @@ var commandMap map[string]Command = map[string]Command{
 	"HELP":&commandHelp{},
 	"LIST":&commandList{},
 	"MKD" :&commandMkd{},
+	"NOOP":&commandNoop{},
 	"PASS":&commandPass{},
 	"PASV":&commandPasv{},
 	"PWD" :&commandPwd{},
