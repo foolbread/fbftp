@@ -90,6 +90,8 @@ const(
 )
 
 var commandMap map[string]Command = map[string]Command{
+	"ABOR":&commandAbor{},
+	"\377\364\377\362ABOR":&commandAbor{},
 	"CDUP":&commandCdup{},
 	"CWD" :&commandCwd{},
 	"DELE":&commandDele{},
