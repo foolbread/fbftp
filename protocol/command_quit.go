@@ -18,7 +18,7 @@ func (p *commandQuit)IsExtend()bool{
 }
 
 func (p *commandQuit)RequireAuth()bool{
-	return true
+	return false
 }
 
 func (p *commandQuit)RequireParam()bool{
