@@ -89,6 +89,7 @@ const(
 	FTP_UPLOADFAIL      = 553
 )
 
+
 var commandMap map[string]Command = map[string]Command{
 	"ABOR":&commandAbor{},
 	"\377\364\377\362ABOR":&commandAbor{},
@@ -102,6 +103,7 @@ var commandMap map[string]Command = map[string]Command{
 	"NOOP":&commandNoop{},
 	"PASS":&commandPass{},
 	"PASV":&commandPasv{},
+	"PORT":&commandPort{},
 	"PWD" :&commandPwd{},
 	"QUIT":&commandQuit{},
 	"RETR":&commandRetr{},
@@ -138,10 +140,12 @@ func DisPatchCmd(sess *session.FTPSession,req *con.FTPCmdReq)error{
 	}
 
 	if e.RequireParam()&& req.IsArgNULL(){
+		sess.CtrlCon.WriteMsg(FTP_NOPERM,"this cmd require arg!")
 		return errArgMiss
 	}
 
 	if e.RequireAuth() && !sess.IsLogin(){
+		sess.CtrlCon.WriteMsg(FTP_LOGINERR,"Please login with USER and PASS.")
 		return errAuth
 	}
 
