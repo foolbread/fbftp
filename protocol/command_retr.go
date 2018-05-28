@@ -32,6 +32,10 @@ func (p *commandRetr)Execute(sess *session.FTPSession, arg string)error{
 
 	defer sess.DataCon.Close()
 
+	if sess.DataCon == nil{
+		return sess.CtrlCon.WriteMsg(FTP_BADSENDCONN,"Use PORT or PASV first.")
+	}
+
 	localpath := sess.BuildPath(arg)
 
 	sess.CtrlCon.WriteMsg(FTP_DATACONN,"send to data.")
