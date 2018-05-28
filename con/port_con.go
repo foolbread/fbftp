@@ -5,7 +5,9 @@ date: 2018/5/24
 */
 package con
 
-import "net"
+import (
+	"net"
+)
 
 type PortCon struct {
 	rawCon *net.TCPConn
@@ -50,5 +52,6 @@ func (c *PortCon)Write(p []byte) (n int, err error){
 func (c *PortCon)Close(){
 	if c.rawCon != nil{
 		c.rawCon.Close()
+		c.rawCon = nil
 	}
 }
