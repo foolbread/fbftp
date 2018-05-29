@@ -8,7 +8,6 @@ package storage
 import (
 	"io"
 	"github.com/foolbread/fbftp/util"
-	"github.com/foolbread/fbcommon/golog"
 	"path/filepath"
 	"time"
 	"os"
@@ -21,6 +20,9 @@ const(
 	common_piece_size = 1024*1024*4 //4MB
 	max_piece_size = 1024*1024*32 //256MB
 )
+
+var this_dir_info *FTPFileInfo = &FTPFileInfo{".",true,os.ModeDir,4096,time.Now(),default_owner,default_group}
+var next_dir_info *FTPFileInfo = &FTPFileInfo{"..",true,os.ModeDir,4096,time.Now(),default_owner,default_group}
 
 func s3CleanFilePath(p string)string{
 	return strings.TrimRight(strings.TrimLeft(p,"/"),"/")
@@ -88,13 +90,14 @@ func (s *S3Storage)ChangeDir(dir string)(bool,error){
 
 func (s *S3Storage)ListFile(dir string)([]*FTPFileInfo,error){
 	dir = s3CleanDirPath(dir)
-	golog.Info("s3 list file:",dir)
 	out,err := s.cli.ListObjects(s.Bucket,dir)
 	if err != nil{
 		return nil,err
 	}
 
 	var ret []*FTPFileInfo
+	ret = append(ret,this_dir_info)
+	ret = append(ret,next_dir_info)
 	for _,v := range out.CommonPrefixes{
 		i := newFTPFileInfo()
 		i.IsDir = true
