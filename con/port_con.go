@@ -26,9 +26,9 @@ func (c *PortCon)startConnectClient()error{
 		return nil
 	}
 
-	//lr,_ := net.ResolveTCPAddr("tcp",":12020")
+	lr,_ := net.ResolveTCPAddr("tcp",":20")
 	var err error
-	c.rawCon,err = net.DialTCP("tcp",nil,c.remoteAddr)
+	c.rawCon,err = net.DialTCP("tcp",lr,c.remoteAddr)
 
 	return err
 }
