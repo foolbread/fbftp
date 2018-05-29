@@ -12,8 +12,8 @@ import (
 	"github.com/foolbread/fbftp/session"
 	"github.com/foolbread/fbftp/con"
 	"net"
-	"fmt"
 	"github.com/foolbread/fbftp/protocol"
+	"fmt"
 )
 
 func InitServer(){

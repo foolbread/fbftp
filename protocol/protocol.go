@@ -92,7 +92,7 @@ const(
 
 var commandMap map[string]Command = map[string]Command{
 	"ABOR":&commandAbor{},
-	"\377\364\377\362ABOR":&commandAbor{},
+	string([]byte{0xff,0xf4,0xf2,0x41,0x42,0x4f,0x52}):&commandAbor{},
 	"CDUP":&commandCdup{},
 	"CWD" :&commandCwd{},
 	"DELE":&commandDele{},
