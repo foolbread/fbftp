@@ -26,5 +26,9 @@ func (p *commandType)RequireParam()bool{
 }
 
 func (p *commandType)Execute(sess *session.FTPSession, arg string)error{
-	return sess.CtrlCon.WriteMsg(FTP_TYPEOK,"Sorry,only support binary mode.")
+	if arg == "I" || arg == "L8" || arg == "L 8"{
+		return sess.CtrlCon.WriteMsg(FTP_TYPEOK,"Switching to Binary mode.")
+	}
+
+	return sess.CtrlCon.WriteMsg(FTP_BADCMD,"Unrecognised TYPE command.")
 }
