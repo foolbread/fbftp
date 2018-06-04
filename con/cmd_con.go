@@ -50,11 +50,13 @@ func (c *CmdCon)Close(){
 }
 
 func (c *CmdCon)GetLocalHost()string{
-	return c.rawcon.LocalAddr().String()
+	host,_,_ := net.SplitHostPort(c.rawcon.LocalAddr().String())
+	return host
 }
 
 func (c *CmdCon)GetRemoteHost()string{
-	return c.rawcon.RemoteAddr().String()
+	host,_,_ := net.SplitHostPort(c.rawcon.RemoteAddr().String())
+	return host
 }
 
 func (c *CmdCon)ReadCMDReq()(*FTPCmdReq,error){

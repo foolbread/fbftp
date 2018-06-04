@@ -29,6 +29,13 @@ func (p *commandPass)RequireParam()bool{
 
 func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 	var login bool = false
+
+	defer func(){
+		if !login{
+			sess.UserName = ""
+		}
+	}()
+
 	userobj := user.UserLogin(sess.UserName,arg)
 	if userobj != nil{
 		sess.UserInfo = userobj
@@ -36,6 +43,7 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 		if useracl != nil{
 			sess.UserAcl = useracl
 			sess.CurPath = "/"
+
 			switch sess.UserInfo.GetUserType() {
 			case user.COMMON_USER:
 				sess.Storage = storage.NewDiskStorage()
@@ -43,6 +51,11 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 				ex := sess.UserInfo.GetUserExternInfo().(*user.CloudUserExternInfo)
 				sess.Storage = storage.NewS3Storage(ex.AccKey,ex.SecKey,ex.EndPoint,ex.Token,ex.Bucket)
 			}
+
+			if !useracl.IsAllowList(sess.CtrlCon.GetRemoteHost()){
+				return sess.CtrlCon.WriteMsg(FTP_LOGINERR,"Login IP is not allowed!")
+			}
+
 			login = true
 		}
 	}
@@ -51,7 +64,6 @@ func (p *commandPass)Execute(sess *session.FTPSession, arg string)error{
 		sess.CtrlCon.WriteMsg(FTP_LOGINOK,"Login successful.")
 	}else{
 		sess.CtrlCon.WriteMsg(FTP_LOGINERR,"Login incorrect.")
-		sess.UserName = ""
 	}
 
 	return nil

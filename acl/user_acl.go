@@ -9,6 +9,7 @@ type UserACL struct {
 	username  string
 	workpath  string
 	authority int
+	allowMap map[string]struct{}
 }
 
 func newUserACL(usr string)*UserACL {
@@ -27,4 +28,14 @@ func (a *UserACL)AllowRead()bool{
 
 func (a *UserACL)AllowWrite()bool{
 	return a.authority&ONLY_WRITE != 0
+}
+
+func (a *UserACL)IsAllowList(client string)bool{
+	if len(a.allowMap) == 0{
+		return true
+	}
+
+	_,allow := a.allowMap[client]
+
+	return allow
 }

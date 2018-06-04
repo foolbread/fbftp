@@ -37,8 +37,8 @@ func (p *commandPasv)Execute(sess *session.FTPSession,arg string)error{
 
 	sess.DataCon = pasv
 	local := sess.CtrlCon.GetLocalHost()
-	idx := strings.Index(local,":")
-	ip := strings.Split(local[:idx],".")
+
+	ip := strings.Split(local,".")
 	p1 := port/256
 	p2 := port&255
 

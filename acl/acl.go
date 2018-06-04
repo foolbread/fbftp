@@ -44,8 +44,18 @@ func GetUserAcl(username string)*UserACL{
 		retacl.authority = READ_WRITE
 	}
 
+	str = conf.MustString("acl","allow_list","")
+	ips := strings.Split(str,"|")
+	if len(ips) > 0{
+		retacl.allowMap = make(map[string]struct{})
+		for _, v:= range ips{
+			retacl.allowMap[v] = struct{}{}
+		}
+	}
+
 	str = conf.MustString("data","data_path","")
 	retacl.workpath = str
+
 
 	return retacl
 }
